@@ -4,8 +4,8 @@ export function Shell({ title, sub, right, children, footer }: {
   title: string; sub?: string; right?: ReactNode; children: ReactNode; footer?: ReactNode;
 }) {
   return (
-    <main className="min-h-screen bg-stone-100 sm:py-6">
-      <div className="mx-auto flex min-h-screen max-w-[390px] flex-col overflow-hidden bg-white sm:min-h-[780px] sm:rounded-[40px] sm:border-4 sm:border-zinc-800">
+    <main className="min-h-screen bg-stone-100 text-zinc-900 sm:py-6">
+      <div className="mx-auto flex min-h-screen max-w-[390px] flex-col overflow-hidden bg-white text-zinc-900 sm:min-h-[780px] sm:rounded-[40px] sm:border-4 sm:border-zinc-800">
         <header className="border-b border-stone-200 px-5 pb-3 pt-5">
           <div className="flex items-center justify-between gap-2">
             <h1 className="text-lg font-bold">{title}</h1>{right}

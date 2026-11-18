@@ -40,13 +40,13 @@ export default function Result() {
           <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-stone-200"><div className="h-full bg-emerald-700" style={{ width: `${(r.score / max) * 100}%` }} /></div>
         </Card>
       ))}
-      <Btn onClick={() => setModal(true)}>{data?.tie ? "동점이에요! " : "만약 동점이라면? "}(익명 한 줄 의견)</Btn>
+      <Btn onClick={() => setModal(true)}>{data?.tie ? "동점이에요! " : ""}마지막 한 마디 (익명)</Btn>
       {modal && (
         <div className="fixed inset-0 z-10 grid place-items-center bg-black/50 p-5" onClick={() => setModal(false)}>
           <div className="w-full max-w-[350px] rounded-2xl bg-white p-4" onClick={(e) => e.stopPropagation()}>
-            <b>익명 한 줄 의견</b>
+            <b>마지막 한 마디</b>
             <div className="my-3 space-y-2">{data?.comments.length ? data.comments.map((c, i) => <p key={i} className="rounded-xl bg-orange-50 p-2 text-sm">“{c}”</p>) : <p className="text-sm text-stone-500">아직 의견이 없어요.</p>}</div>
-            <input value={text} onChange={(e) => setText(e.target.value)} maxLength={60} placeholder="내 한 줄 의견 (익명)" className="w-full rounded-xl border border-stone-300 p-2" />
+            <input value={text} onChange={(e) => setText(e.target.value)} maxLength={60} placeholder="마지막 한 마디 (익명)" className="w-full rounded-xl border border-stone-300 p-2" />
             <div className="mt-2 grid grid-cols-2 gap-2"><Btn variant="pri" onClick={addComment}>남기기</Btn><Btn onClick={() => setModal(false)}>닫기</Btn></div>
           </div>
         </div>
