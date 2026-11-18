@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { api, Recommendation, won } from "@/lib/api";
 import { useRoom } from "@/lib/useRoom";
-import { Btn, Card, Err, Notice, Shell } from "@/components/ui";
+import { Btn, Card, Err, Notice, Shell, pillCls } from "@/components/ui";
 
 const ICON: Record<string, string> = { "가장 가까운 곳": "📍", "평점이 높은 곳": "⭐", "가성비 좋은 곳": "💰", "검색 인기 있는 곳": "🔎", "조금 더 걸으면": "🚶" };
 
@@ -31,7 +31,7 @@ export default function Recommend() {
   return (
     <Shell title="AI 맞춤 식당 추천"
       sub={`${state?.final_menu ?? ""} · 예산 ${state?.budget ? won(state.budget) + " 이하" : "제한 없음"} · ${state?.place ?? ""}`}
-      footer={<Btn disabled={loading} onClick={() => run(true)}>AI 추천 다시 받기</Btn>}>
+      footer={<Btn variant="pri" disabled={loading} onClick={() => run(true)}>{loading ? "찾는 중…" : "AI 추천 다시 받기"}</Btn>}>
       <Err msg={err} />
       {loading && <Notice>AI가 조건에 맞는 식당을 찾고 있어요…</Notice>}
       {!loading && rec?.mode === "rules" && <Notice>카카오맵 검색 결과로 만든 추천이에요. 평점·가격은 카카오맵에서 확인하세요.</Notice>}
@@ -42,9 +42,9 @@ export default function Recommend() {
           <p className="text-xs text-stone-500">{r.rating != null && `★ ${r.rating} / `}도보 약 {r.walk_minutes}분{r.avg_price != null && ` / 평균 ${won(r.avg_price)}`}</p>
           <p className="my-2 text-sm italic">“{r.reason}”</p>
           <div className="grid grid-cols-3 gap-2 text-center text-xs">
-            <a className="rounded-full border border-stone-400 py-1" target="_blank" href={r.url ?? `https://map.kakao.com/link/search/${encodeURIComponent(r.name)}`}>카카오맵</a>
-            <a className="rounded-full border border-stone-400 py-1" target="_blank" href={`https://map.naver.com/p/search/${encodeURIComponent(r.name)}`}>네이버지도</a>
-            <button className="rounded-full border border-stone-400 py-1" onClick={() => share(r.name)}>공유</button>
+            <a className={pillCls} target="_blank" rel="noreferrer" href={r.url ?? `https://map.kakao.com/link/search/${encodeURIComponent(r.name)}`}>카카오맵</a>
+            <a className={pillCls} target="_blank" rel="noreferrer" href={`https://map.naver.com/p/search/${encodeURIComponent(r.name)}`}>네이버지도</a>
+            <button className={pillCls} onClick={() => share(r.name)}>공유</button>
           </div>
         </Card>
       ))}

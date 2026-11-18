@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./motion.css";
 
 export const metadata: Metadata = { title: "아무거나", description: "눈치 없이 함께 정하는 메뉴" };
 

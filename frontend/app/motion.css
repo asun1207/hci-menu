@@ -1,0 +1,23 @@
+/* 화면 전환·바텀시트·선택 애니메이션 (globals.css는 건드리지 않고 별도 파일로 분리) */
+@keyframes am-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes am-sheet { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes am-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes am-pop { 0% { transform: scale(0.96); } 60% { transform: scale(1.03); } 100% { transform: scale(1); } }
+
+/* 페이지 내용이 아래에서 위로 순서대로 올라옴 */
+.am-page > * { animation: am-rise 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.am-page > *:nth-child(2) { animation-delay: 0.05s; }
+.am-page > *:nth-child(3) { animation-delay: 0.1s; }
+.am-page > *:nth-child(4) { animation-delay: 0.15s; }
+.am-page > *:nth-child(5) { animation-delay: 0.2s; }
+.am-page > *:nth-child(n + 6) { animation-delay: 0.25s; }
+
+/* 하단 바텀시트가 미끄러져 올라옴 */
+.am-sheet { animation: am-sheet 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.am-fade { animation: am-fade 0.25s ease-out both; }
+/* 선택되는 순간 살짝 튀는 효과 */
+.am-pop { animation: am-pop 0.25s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  .am-page > *, .am-sheet, .am-fade, .am-pop { animation: none !important; }
+}

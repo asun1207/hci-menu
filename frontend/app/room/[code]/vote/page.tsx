@@ -3,10 +3,16 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { api, Emoji, won } from "@/lib/api";
 import { useCountdown, useRoom } from "@/lib/useRoom";
-import { Btn, Card, Err, MENU_ICON, Shell } from "@/components/ui";
+import { Btn, Card, Chip, Err, MENU_ICON, Shell } from "@/components/ui";
 
 // 이모지 옆 점수 표기는 제거 (점수 체계는 그대로 👍2 / 😐1 / ❌0)
 const OPTIONS: [Emoji, string][] = [["good", "👍 좋아요"], ["soso", "😐 먹을 수 있어요"], ["bad", "❌ 피하고 싶어요"]];
+// 선택 색: 좋아요=초록, 보통=노랑, 피하고 싶어요=빨강 (모두 연한 배경 + 진한 글씨)
+const PICKED: Record<Emoji, string> = {
+  good: "border-emerald-700 bg-emerald-50 !text-emerald-800",
+  soso: "border-amber-500 bg-amber-50 !text-amber-800",
+  bad: "border-red-500 bg-red-50 !text-red-700",
+};
 
 export default function Vote() {
   const { code } = useParams<{ code: string }>();
@@ -36,7 +42,7 @@ export default function Vote() {
   return (
     <Shell title="이모지 투표" sub="올라온 모든 메뉴에 투표해요. 시간이 끝나면 투표한 사람 기준으로 집계돼요."
       right={timer}
-      footer={<><Err msg={err} /><Btn variant="pri" disabled={!complete} onClick={submit}>투표 완료</Btn></>}>
+      footer={<><Err msg={err} /><Btn variant="pri" disabled={!complete} onClick={submit}>{complete ? "투표 완료" : `${Object.keys(votes).length} / ${cands.length}개 투표함`}</Btn></>}>
       {cands.map((c) => (
         <Card key={c.menu}>
           <div className="flex items-center gap-3">
@@ -46,14 +52,15 @@ export default function Vote() {
           <div className="mt-3 grid gap-2">
             {OPTIONS.map(([e, label]) => (
               <button key={e} onClick={() => pick(c.menu, e)}
-                className={`rounded-xl border p-2 text-left text-sm ${votes[c.menu] === e ? "border-2 border-emerald-700 bg-emerald-50 font-semibold" : "border-stone-300"}`}>{label}</button>
+                className={`flex items-center justify-between rounded-xl border-2 px-3 py-2.5 text-left text-sm transition duration-150 active:scale-[0.98] ${votes[c.menu] === e ? `am-pop font-semibold ${PICKED[e]}` : "border-stone-200 bg-white !text-zinc-800 hover:border-stone-400"}`}>
+                <span>{label}</span>{votes[c.menu] === e && <span aria-hidden>✓</span>}
+              </button>
             ))}
           </div>
           {(votes[c.menu] === "good" || votes[c.menu] === "bad") && (
-            <button onClick={() => setWild(wild === c.menu ? null : c.menu)}
-              className={`mt-2 rounded-full border px-3 py-1 text-xs ${wild === c.menu ? "bg-zinc-900 text-white" : ""}`}>
+            <Chip on={wild === c.menu} className="mt-2" onClick={() => setWild(wild === c.menu ? null : c.menu)}>
               🃏 와일드카드 (1회) {wild === c.menu ? (votes[c.menu] === "good" ? "· 좋아요 +1" : "· 피하고 싶어요 -1") : ""}
-            </button>
+            </Chip>
           )}
         </Card>
       ))}

@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { api } from "@/lib/api";
 import { useRoom } from "@/lib/useRoom";
-import { Btn, Card, Err, Shell } from "@/components/ui";
+import { Badge, Btn, Card, Err, Shell, pillCls } from "@/components/ui";
 
 export default function Lobby() {
   const { code } = useParams<{ code: string }>();
@@ -17,7 +17,7 @@ export default function Lobby() {
 
   return (
     <Shell title={state?.name ?? "방 불러오는 중…"} sub={state ? `📍 ${state.place}` : ""}
-      right={<span className="rounded-full bg-zinc-900 px-3 py-1 text-xs text-white">현재 {state?.members ?? 0}명 접속 중</span>}
+      right={<Badge>현재 {state?.members ?? 0}명 접속 중</Badge>}
       footer={state?.is_host
         ? <Btn variant="pri" onClick={start}>메뉴 제안 시작하기</Btn>
         : <p className="text-center text-sm text-stone-500">방장이 시작하면 자동으로 이동해요</p>}>
@@ -25,7 +25,7 @@ export default function Lobby() {
       <Card className="bg-orange-50">
         <p className="text-xs text-stone-500">초대 링크</p>
         <p className="break-all font-semibold">{link}</p>
-        <button onClick={copy} className="mt-2 rounded-full border border-stone-400 bg-white px-3 py-1 text-xs">
+        <button onClick={copy} className={`mt-2 ${pillCls}`}>
           {copied ? "✓ 복사됨" : "링크 복사하기"}
         </button>
       </Card>

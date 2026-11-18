@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { api, Ranked, ResultData, won } from "@/lib/api";
 import { useRoom } from "@/lib/useRoom";
-import { Card, Shell } from "@/components/ui";
+import { Card, Shell, btnCls } from "@/components/ui";
 
 const dist = (r: Ranked) => [r.good && `👍 ${r.good}명`, r.soso && `😐 ${r.soso}명`, r.bad && `❌ ${r.bad}명`].filter(Boolean).join(", ");
 
@@ -18,7 +18,7 @@ export default function Compare() {
 
   return (
     <Shell title="후보별 조건 비교" sub={c ? `${c.first.menu} vs ${c.second.menu}` : ""}
-      footer={<Link href={`/room/${code}/result`} className="block rounded-xl border-2 border-zinc-800 p-3 text-center font-semibold">&lt; 뒤로 (투표 결과)</Link>}>
+      footer={<Link href={`/room/${code}/result`} className={btnCls("line")}>&lt; 뒤로 (투표 결과)</Link>}>
       {c && <>
         <table className="w-full text-sm"><thead><tr><th /><th>{c.first.menu}</th><th>{c.second.menu}</th></tr></thead>
           <tbody className="[&_tr]:border-b [&_tr]:border-stone-200">
