@@ -29,11 +29,6 @@ export default function Lobby() {
           {copied ? "✓ 복사됨" : "링크 복사하기"}
         </button>
       </Card>
-      {process.env.NODE_ENV === "development" && (
-        <button className="text-xs text-stone-400 underline" onClick={async () => { await api.devFill(code); refresh(); }}>
-          🧪 개발용: 데모 친구 3명 채우기
-        </button>
-      )}
     </Shell>
   );
 }

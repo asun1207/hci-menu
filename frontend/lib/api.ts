@@ -6,7 +6,7 @@ export interface RoomState {
   name: string; place: string; phase: Phase; is_host: boolean; members: number;
   seconds_left: number | null; proposals_done: number; votes_done: number;
   candidates: Candidate[]; filtered_out: string[]; final_menu: string | null; budget: number | null;
-  my: { menu: string | null; skipped: boolean; voted: boolean; max_budget: number | null; exclude_spicy: boolean };
+  my: { menu: string | null; skipped: boolean; voted: boolean; max_budget: number | null; excluded_tags: string[] };
 }
 export interface Ranked extends Candidate { score: number; good: number; soso: number; bad: number }
 export interface ResultData {
@@ -14,9 +14,9 @@ export interface ResultData {
   comparison: { first: Ranked; second: Ranked; reason: string } | null;
 }
 export interface Restaurant {
-  category: string; name: string; walk_minutes: number; avg_price: number; rating: number | null; reason: string;
+  category: string; name: string; walk_minutes: number; avg_price: number | null; rating: number | null; reason: string; url?: string | null;
 }
-export interface Recommendation { menu: string; grounded: boolean; restaurants: Restaurant[] }
+export interface Recommendation { menu: string; mode: "rules" | "llm"; grounded: boolean; restaurants: Restaurant[] }
 
 // 이름 대신 브라우저마다 만드는 익명 토큰 (시크릿 창 = 다른 사람으로 테스트 가능)
 export function memberId(): string {
@@ -40,8 +40,8 @@ export const api = {
   join: (code: string) => call(`${R(code)}/join`, "POST", { member_id: memberId() }),
   state: (code: string) => call<RoomState>(`${R(code)}/state?member_id=${memberId()}`),
   start: (code: string) => call(`${R(code)}/start`, "POST", { member_id: memberId() }),
-  conditions: (code: string, max_budget: number | null, exclude_spicy: boolean) =>
-    call(`${R(code)}/conditions`, "POST", { member_id: memberId(), max_budget, exclude_spicy }),
+  conditions: (code: string, max_budget: number | null, excluded_tags: string[]) =>
+    call(`${R(code)}/conditions`, "POST", { member_id: memberId(), max_budget, excluded_tags }),
   menu: (code: string, menu: string | null, skip = false) =>
     call(`${R(code)}/menu`, "POST", { member_id: memberId(), menu, skip }),
   vote: (code: string, votes: Record<string, Emoji>, wildcard_menu: string | null) =>
@@ -50,7 +50,6 @@ export const api = {
   comment: (code: string, text: string) => call(`${R(code)}/comments`, "POST", { member_id: memberId(), text }),
   confirm: (code: string) => call(`${R(code)}/confirm`, "POST", { member_id: memberId() }),
   recommend: (code: string, refresh = false) => call<Recommendation>(`${R(code)}/recommend?refresh=${refresh}`, "POST"),
-  devFill: (code: string) => call(`${R(code)}/dev/fill`, "POST"),
 };
 
 export const won = (n: number | null) => (n == null ? "-" : n.toLocaleString("ko-KR") + "원");

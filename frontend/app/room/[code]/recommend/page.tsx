@@ -5,7 +5,7 @@ import { api, Recommendation, won } from "@/lib/api";
 import { useRoom } from "@/lib/useRoom";
 import { Btn, Card, Err, Notice, Shell } from "@/components/ui";
 
-const ICON: Record<string, string> = { "가장 가까운 곳": "📍", "평점이 높은 곳": "⭐", "가성비 좋은 곳": "💰" };
+const ICON: Record<string, string> = { "가장 가까운 곳": "📍", "평점이 높은 곳": "⭐", "가성비 좋은 곳": "💰", "검색 인기 있는 곳": "🔎", "조금 더 걸으면": "🚶" };
 
 export default function Recommend() {
   const { code } = useParams<{ code: string }>();
@@ -34,15 +34,15 @@ export default function Recommend() {
       footer={<Btn disabled={loading} onClick={() => run(true)}>AI 추천 다시 받기</Btn>}>
       <Err msg={err} />
       {loading && <Notice>AI가 조건에 맞는 식당을 찾고 있어요…</Notice>}
-      {!loading && rec && !rec.grounded && <Notice>⚠️ 지도 데이터 없이 생성된 추천이에요. 가기 전에 지도에서 영업 여부를 확인하세요.</Notice>}
+      {!loading && rec?.mode === "rules" && <Notice>카카오맵 검색 결과로 만든 추천이에요. 평점·가격은 카카오맵에서 확인하세요.</Notice>}
       {!loading && rec?.restaurants.map((r) => (
         <Card key={r.category}>
           <b>{ICON[r.category]} {r.category}</b>
           <p className="my-1 text-base font-bold">[{r.name}]</p>
-          <p className="text-xs text-stone-500">{r.rating != null && `★ ${r.rating} / `}도보 {r.walk_minutes}분 / 평균 {won(r.avg_price)}</p>
+          <p className="text-xs text-stone-500">{r.rating != null && `★ ${r.rating} / `}도보 약 {r.walk_minutes}분{r.avg_price != null && ` / 평균 ${won(r.avg_price)}`}</p>
           <p className="my-2 text-sm italic">“{r.reason}”</p>
           <div className="grid grid-cols-3 gap-2 text-center text-xs">
-            <a className="rounded-full border border-stone-400 py-1" target="_blank" href={`https://map.kakao.com/link/search/${encodeURIComponent(r.name)}`}>카카오맵</a>
+            <a className="rounded-full border border-stone-400 py-1" target="_blank" href={r.url ?? `https://map.kakao.com/link/search/${encodeURIComponent(r.name)}`}>카카오맵</a>
             <a className="rounded-full border border-stone-400 py-1" target="_blank" href={`https://map.naver.com/p/search/${encodeURIComponent(r.name)}`}>네이버지도</a>
             <button className="rounded-full border border-stone-400 py-1" onClick={() => share(r.name)}>공유</button>
           </div>
